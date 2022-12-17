@@ -1,6 +1,10 @@
 import styled from 'styled-components';
-export default function BoxButton({ children, selected }) {
-  return <Wrappler>{children}</Wrappler>;
+export default function BoxButton({ onClick, selected, children }) {
+  return (
+    <Wrappler onClick={onClick} selected={selected}>
+      {children}
+    </Wrappler>
+  );
 }
 
 const Wrappler = styled.div`
@@ -24,7 +28,7 @@ const Wrappler = styled.div`
     text-align: center;
     color: #454545;
   }
-  h2{
+  h2 {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
