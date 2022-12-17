@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import BoxButton from '../../../components/Dashboard/common/boxButton';
-import useTicketType from '../../../hooks/api/useTicket';
+import useTicketType from '../../../hooks/api/useTicketType';
 import { useState } from 'react';
 
 export default function Payment() {
