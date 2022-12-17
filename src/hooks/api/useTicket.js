@@ -8,8 +8,8 @@ export default function useTicketType() {
   const {
     data: event,
     loading: eventLoading,
-    error: eventError
-  } = useAsync(() => ticketApi.getTicketType(token), false);
+    error: eventError,
+  } = useAsync(() => ticketApi.getTicketType(token), true);
 
   return {
     event,
