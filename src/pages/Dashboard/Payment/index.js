@@ -50,7 +50,7 @@ function HotelButtons({ tickets, includesHotel, setIncludesHotel }) {
               selected={includesHotel === ticket.includesHotel}
               onClick={() => setIncludesHotel(ticket.includesHotel)}
             >
-              {ticket.includesHotel ? <h1>Com hotel</h1> : <h1>Sem Hotel</h1>}
+              {ticket.includesHotel ? <h1>Com Hotel</h1> : <h1>Sem Hotel</h1>}
               <h2>+ R$ {ticket.price / 100 - price}</h2>
             </BoxButton>
           );
