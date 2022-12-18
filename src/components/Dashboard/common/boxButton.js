@@ -18,6 +18,8 @@ const Wrappler = styled.div`
   justify-content: center;
   align-items: center;
   margin-right: 24px;
+  margin-bottom: 24px;
+  cursor: pointer;
 
   h1 {
     font-family: 'Roboto';
