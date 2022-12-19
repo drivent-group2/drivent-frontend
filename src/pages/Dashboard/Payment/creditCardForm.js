@@ -2,7 +2,7 @@ import React from 'react';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import styled from 'styled-components';
-import Payment from './index';
+import { setCardInfo } from '../../../services/paymentApi';
 
 export default class PaymentForm extends React.Component {
   state = {
@@ -21,25 +21,17 @@ export default class PaymentForm extends React.Component {
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
-
     this.setState({ [name]: value });
-    console.log(this.state);
-  };
-
-  handleCallback = ({ issuer }, isValid) => {
-    if (isValid) {
-      this.setState({ issuer: issuer });
-    }
-    console.log(issuer);
-  };
-
-  insertPayment = () => {
     const paymentInfo = {
       cardIssuer: this.state.issuer,
-      cardLastDigits: this.state.number.slice(-4),
+      number: this.state.number.slice(-4),
     };
-    console.log(paymentInfo);
-    return paymentInfo;
+    paymentInfo[name] = value;
+    setCardInfo(paymentInfo);
+  };
+
+  handleCallback = ({ issuer }) => {
+    this.setState({ issuer: issuer });
   };
 
   render() {
@@ -94,7 +86,6 @@ export default class PaymentForm extends React.Component {
             />
           </Form>
         </CardContainer>
-        <ButtonPayment onClick={this.insertPayment}>Finalizar pedido</ButtonPayment>
       </>
     );
   }
@@ -149,14 +140,4 @@ const InputCardDate = styled.input`
   margin-bottom: 20px;
   border-radius: 5px;
   font-size: 18px;
-`;
-
-const ButtonPayment = styled.button`
-  width: 182px;
-  height: 37px;
-  border-radius: 4px;
-  background-color: #e0e0e0;
-  border: none;
-  font-size: 14px;
-  font-family: 'Roboto', sans-serif;
 `;
