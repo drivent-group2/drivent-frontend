@@ -11,6 +11,7 @@ const Wrappler = styled.div`
   height: 108px;
   border-radius: 20px;
   background: #ffeed2;
+  margin-bottom: 20px;
 
   h1 {
     font-family: 'Roboto';
