@@ -24,7 +24,9 @@ export default class PaymentForm extends React.Component {
     this.setState({ [name]: value });
     const paymentInfo = {
       cardIssuer: this.state.issuer,
-      number: this.state.number.slice(-4),
+      number: this.state.number,
+      expiry: this.state.expiry,
+      cvc: this.state.cvc
     };
     paymentInfo[name] = value;
     setCardInfo(paymentInfo);

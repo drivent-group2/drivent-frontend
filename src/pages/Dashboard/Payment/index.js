@@ -1,26 +1,21 @@
-import { useState, useContext } from 'react';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import UserContext from '../../../contexts/UserContext';
-import { getUserTicket } from '../../../services/ticketApi';
 import PaymentForm from './creditCardForm';
-import Cards from 'react-credit-cards';
-import { getCardInfo, savePayment } from '../../../services/paymentApi';
+import { getCardInfo } from '../../../services/paymentApi';
 import Vector from '../../../assets/images/Vector.png';
+import useToken from '../../../hooks/useToken';
+import useTicket from '../../../hooks/api/useTicket';
+import useSavePayment from '../../../hooks/api/useSavePayment';
 
 export default function Payment() {
-  const [ticket, setTicket] = useState('Carregando...');
-  const { userData } = useContext(UserContext);
-
-  useEffect(async() => {
-    if (userData) {
-      const getTicket = await getUserTicket(userData.token);
-      setTicket(getTicket);
-    }
-  }, []);
+  const token = useToken();
+  const [cardMessage, setCardMessage] = useState();
+  const { ticket, getTicket, ticketLoading } = useTicket();
+  const { savePayment } = useSavePayment();
 
   async function insertPayment() {
     const cardInfo = getCardInfo();
+    if (verifyCardData(cardInfo) === 'invalid') return;
     const body = {
       ticketId: ticket.id,
       cardData: {
@@ -29,12 +24,36 @@ export default function Payment() {
         value: ticket.TicketType.price,
       },
     };
-    console.log(body);
-    await savePayment(body, userData.token);
+    await savePayment(body, token);
+    await getTicket();
   }
 
-  if (ticket === 'Carregando...') {
-    return <>{ticket}</>;
+  function verifyCardData(cardInfo) {
+    if (!cardInfo) {
+      setCardMessage('Preencha os campos');
+      return 'invalid';
+    }
+    const invalidCardData =
+      cardInfo.number.length !== 16 ||
+      cardInfo.issuer === '' ||
+      cardInfo.expiry.length !== 4 ||
+      cardInfo.cvc.length !== 3 ||
+      isNaN(Number(cardInfo.number)) ||
+      isNaN(Number(cardInfo.cvc)) ||
+      isNaN(Number(cardInfo.expiry));
+    if (invalidCardData) {
+      setCardMessage('Dados inválidos');
+      return 'invalid';
+    }
+    return 'valid';
+  }
+
+  if (ticketLoading) {
+    return <>Carregando...</>;
+  }
+
+  if(!ticket) {
+    return <>Erro, refaça login ou tente mais tarde...</>;
   }
 
   return (
@@ -59,6 +78,7 @@ export default function Payment() {
       ) : (
         <>
           <PaymentForm />
+          <ErrorMessage>{cardMessage}</ErrorMessage>
           <ButtonPayment onClick={insertPayment}>Finalizar pedido</ButtonPayment>
         </>
       )}
@@ -118,4 +138,10 @@ const PaymentComplete = styled.div`
     line-height: 20px;
     margin-left: 5px;
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 10px;
+  margin-bottom: 15px;
 `;

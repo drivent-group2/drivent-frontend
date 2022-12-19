@@ -1,6 +1,6 @@
 import api from './api';
 
-let cardInfo = {};
+let cardInfo;
 
 export function setCardInfo(paymentInfo) {
   cardInfo = paymentInfo;
@@ -16,4 +16,6 @@ export async function savePayment(body, token) {
       Authorization: `Bearer ${token}`,
     },
   });
+  
+  return response.data;
 }
