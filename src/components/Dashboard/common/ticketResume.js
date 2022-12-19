@@ -1,25 +1,17 @@
 import styled from 'styled-components';
-export default function BoxButton({ onClick, selected, children }) {
-  return (
-    <Wrappler onClick={onClick} selected={selected}>
-      {children}
-    </Wrappler>
-  );
+export default function ResumeBox({ children, selected }) {
+  return <Wrappler>{children}</Wrappler>;
 }
 
 const Wrappler = styled.div`
-  width: 145px;
-  height: 145px;
-  background: ${(props) => (props.selected ? '#ffeed2' : 'none')};
-  border: 1px solid #cecece;
-  border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  margin-right: 24px;
-  margin-bottom: 24px;
-  cursor: pointer;
+  width: 290px;
+  height: 108px;
+  border-radius: 20px;
+  background: #ffeed2;
+  margin-bottom: 20px;
 
   h1 {
     font-family: 'Roboto';
