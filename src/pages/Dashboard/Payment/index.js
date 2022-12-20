@@ -12,7 +12,6 @@ import useTicketType from '../../../hooks/api/useTicketType';
 import { useState, useEffect } from 'react';
 import Button from '../../../components/Form/Button';
 import useCreateTicket from '../../../hooks/api/useCreateTicket';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function Payment() {
@@ -130,7 +129,6 @@ function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeI
                 onClick={() => {
                   setIncludesHotel(ticket.includesHotel);
                   setTicketTypeId(ticket.id);
-                  console.log(ticket.id);
                 }}
               >
                 {ticket.includesHotel ? <h1>Com Hotel</h1> : <h1>Sem Hotel</h1>}
@@ -156,7 +154,6 @@ function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId }) {
               onClick={() => {
                 setIsRemote(ticket.isRemote);
                 setTicketTypeId(ticket.id);
-                console.log(ticket.id);
               }}
             >
               {ticket.isRemote ? <h1>Online</h1> : <h1>Presencial</h1>}
