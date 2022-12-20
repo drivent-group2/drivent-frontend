@@ -29,15 +29,16 @@ export default function Payment() {
     if (isRemote) setIncludesHotel(null);
   }, [isRemote]);
 
-  async function handleForm() {
+  function handleForm() {
     const data = { ticketTypeId };
-    try {
-      await createTickets(data);
-      navigate('/payments/user');
-    } catch (error) {
+    createTickets(data)
+      .then((ans) => {
+        // eslint-disable-next-line no-console
+        console.log(ans.data);
+        navigate('/payments/user');
+      })
       // eslint-disable-next-line no-console
-      console.log(error.message);
-    }
+      .catch((error) => console.log(error.message));
   }
 
   return (
@@ -84,6 +85,7 @@ export default function Payment() {
                 tickets={ticketTypes.tickets}
                 includesHotel={includesHotel}
                 setIncludesHotel={setIncludesHotel}
+                setTicketTypeId={setTicketTypeId}
               />
               <FormWrapper onSubmit={handleForm}>
                 <SubmitContainer>
@@ -112,31 +114,31 @@ export default function Payment() {
     </>
   );
 }
-function HotelButtons({ tickets, includesHotel, setIncludesHotel }) {
-  const baseTicket = tickets.filter((ticket) => !ticket.isRemote && !ticket.includesHotel);
-  const price = baseTicket[0].price / 100;
+function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeId }) {
+  const baseTicket = tickets ? tickets.filter((ticket) => !ticket.isRemote && !ticket.includesHotel) : [];
+  const price = baseTicket[0]?.price / 100;
   return (
     <>
-      {!tickets ? (
-        <>Carregando</>
-      ) : (
-        <ButtonsWrappler>
-          {tickets.map((ticket, index) => {
-            if (!ticket.isRemote) {
-              return (
-                <BoxButton
-                  key={index}
-                  selected={includesHotel === ticket.includesHotel}
-                  onClick={() => setIncludesHotel(ticket.includesHotel)}
-                >
-                  {ticket.includesHotel ? <h1>Com Hotel</h1> : <h1>Sem Hotel</h1>}
-                  <h2>+ R$ {ticket.price / 100 - price}</h2>
-                </BoxButton>
-              );
-            }
-          })}
-        </ButtonsWrappler>
-      )}
+      <ButtonsWrappler>
+        {tickets?.map((ticket, index) => {
+          if (!ticket.isRemote) {
+            return (
+              <BoxButton
+                key={index}
+                selected={includesHotel === ticket.includesHotel}
+                onClick={() => {
+                  setIncludesHotel(ticket.includesHotel);
+                  setTicketTypeId(ticket.id);
+                  console.log(ticket.id);
+                }}
+              >
+                {ticket.includesHotel ? <h1>Com Hotel</h1> : <h1>Sem Hotel</h1>}
+                <h2>+ R$ {ticket.price / 100 - price}</h2>
+              </BoxButton>
+            );
+          }
+        })}
+      </ButtonsWrappler>
     </>
   );
 }
@@ -153,6 +155,7 @@ function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId }) {
               onClick={() => {
                 setIsRemote(ticket.isRemote);
                 setTicketTypeId(ticket.id);
+                console.log(ticket.id);
               }}
             >
               {ticket.isRemote ? <h1>Online</h1> : <h1>Presencial</h1>}
@@ -170,11 +173,10 @@ const StyledTypography = styled(Typography)`
 `;
 const ButtonsWrappler = styled.div`
   display: flex;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 const SubmitContainer = styled.div`
-  margin-top: 40px !important;
   width: 100% !important;
 
   > button {

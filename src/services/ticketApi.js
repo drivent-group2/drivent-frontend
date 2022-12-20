@@ -25,7 +25,6 @@ export async function createTicket(token, ticketTypeId) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    body: {},
     ticketTypeId,
   });
   return response.data;
