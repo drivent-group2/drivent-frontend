@@ -24,7 +24,6 @@ export default function Payment() {
   const [includesHotel, setIncludesHotel] = useState(null);
   const [ticketTypeId, setTicketTypeId] = useState(null);
   const { createTickets } = useCreateTicket();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (isRemote) setIncludesHotel(null);
@@ -35,12 +34,10 @@ export default function Payment() {
     const data = {};
     data.ticketTypeId = ticketTypeId;
     try {
-      createTickets(data);
+      await createTickets(data);
       toast('Ticket reservado!');
-      navigate('/payments/user');
     } catch (error) {
       toast('Não foi possível reservar seu ticket!');
-      console.log(error.message);
     }
   }
 
