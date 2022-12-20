@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 import Button from '../../../components/Form/Button';
 import useCreateTicket from '../../../hooks/api/useCreateTicket';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Payment() {
   const { ticket } = useTicket();
@@ -22,23 +23,25 @@ export default function Payment() {
   const [isRemote, setIsRemote] = useState(null);
   const [includesHotel, setIncludesHotel] = useState(null);
   const [ticketTypeId, setTicketTypeId] = useState(null);
-  const { createTickets } = useCreateTicket;
+  const { createTickets } = useCreateTicket();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isRemote) setIncludesHotel(null);
   }, [isRemote]);
 
-  function handleForm() {
-    const data = { ticketTypeId };
-    createTickets(data)
-      .then((ans) => {
-        // eslint-disable-next-line no-console
-        console.log(ans.data);
-        navigate('/payments/user');
-      })
-      // eslint-disable-next-line no-console
-      .catch((error) => console.log(error.message));
+  async function handleForm(e) {
+    e.preventDefault();
+    const data = {};
+    data.ticketTypeId = ticketTypeId;
+    try {
+      createTickets(data);
+      toast('Ticket reservado!');
+      navigate('/payments/user');
+    } catch (error) {
+      toast('Não foi possível reservar seu ticket!');
+      console.log(error.message);
+    }
   }
 
   return (
@@ -68,7 +71,8 @@ export default function Payment() {
           {isRemote ? (
             <>
               <StyledTypography variant="h6" color="textSecondary">
-                Fechado! O Total ficou em R$ . Agora é só confirmar.
+                Fechado! O Total ficou em R$
+                {ticketTypes.tickets.find((ticket) => ticket.ticketTypeId === ticketTypeId)}. Agora é só confirmar.
               </StyledTypography>
               <FormWrapper onSubmit={handleForm}>
                 <SubmitContainer>
