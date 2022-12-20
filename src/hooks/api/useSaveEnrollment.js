@@ -1,6 +1,5 @@
 import useAsync from '../useAsync';
 import useToken from '../useToken';
-
 import * as enrollmentApi from '../../services/enrollmentApi';
 
 export default function useSaveEnrollment() {
@@ -9,12 +8,12 @@ export default function useSaveEnrollment() {
   const {
     loading: saveEnrollmentLoading,
     error: saveEnrollmentError,
-    act: saveEnrollment
+    act: saveEnrollment,
   } = useAsync((data) => enrollmentApi.save(data, token), false);
 
   return {
     saveEnrollmentLoading,
     saveEnrollmentError,
-    saveEnrollment
+    saveEnrollment,
   };
 }
