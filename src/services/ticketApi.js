@@ -19,3 +19,14 @@ export async function getTicket(token) {
 
   return response.data;
 }
+
+export async function createTicket(token, ticketTypeId) {
+  const response = await api.post('/tickets', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: {},
+    ticketTypeId,
+  });
+  return response.data;
+}

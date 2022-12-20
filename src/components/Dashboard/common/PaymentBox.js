@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { BsCheckCircleFill } from 'react-icons/bs';
+import { BsCheckCircle } from 'react-icons/bs';
 
 export default function PaymentBox() {
   return (
     <Wrappler>
-      <BsCheckCircleFill color="#36B853" size={40} />
+      <BsCheckCircle color="#36B853" size={40} />
       <PaymentBoxTexts>
         <h1>Pagamento confirmado!</h1>
         <h2>Prossiga para a escolha de hospedagem e atividades</h2>
