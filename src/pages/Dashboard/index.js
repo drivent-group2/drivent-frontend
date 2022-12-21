@@ -23,6 +23,7 @@ export default function Dashboard() {
 }
 
 const Container = styled.div`
+  position: relative;
   padding: 30px;
   height: 100%;
   width: 100%;
