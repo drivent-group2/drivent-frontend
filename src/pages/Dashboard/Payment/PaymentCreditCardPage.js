@@ -6,8 +6,9 @@ import Vector from '../../../assets/images/Vector.png';
 import useToken from '../../../hooks/useToken';
 import useTicket from '../../../hooks/api/useTicket';
 import useSavePayment from '../../../hooks/api/useSavePayment';
+import { toast } from 'react-toastify';
 
-export default function PaymentPage() {
+export default function PaymentCreditCardPage() {
   const token = useToken();
   const [cardMessage, setCardMessage] = useState();
   const { ticket, getTicket, ticketLoading } = useTicket();
@@ -26,6 +27,7 @@ export default function PaymentPage() {
     };
     await savePayment(body, token);
     await getTicket();
+    toast('Pagamento realizado');
   }
 
   function verifyCardData(cardInfo) {
@@ -58,7 +60,6 @@ export default function PaymentPage() {
 
   return (
     <>
-      <Title>Ingresso e Pagamento</Title>
       <Subtitle>Ingresso escolhido:</Subtitle>
       <TicketInfo>
         {ticket.TicketType.isRemote === false ? 'Presencial + ' : 'Remoto + '}
@@ -85,12 +86,6 @@ export default function PaymentPage() {
     </>
   );
 }
-
-const Title = styled.div`
-  font-family: 'Roboto', sans-serif;
-  font-size: 34px;
-  margin-bottom: 30px;
-`;
 
 const Subtitle = styled.div`
   color: #8e8e8e;

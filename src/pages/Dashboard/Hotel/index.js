@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import AlertMessage from '../../../components/Dashboard/common/AlertMessage';
 import useTicket from '../../../hooks/api/useTicket';
 
 export default function Hotel() {
@@ -15,6 +16,14 @@ export default function Hotel() {
   if (ticket.status === 'RESERVED') {
     return (
       <ErrorMessage>Você precisa ter confirmado pagamento antes de fazer a escolha da hospedagem</ErrorMessage>
+    );
+  }
+  if (ticket.TicketType?.isRemote ) {
+    return (
+      <AlertMessage>
+        Sua modalidade de ingresso não inclui hospedagem <br />
+        Prossiga para a escolha de atividades
+      </AlertMessage>
     );
   }
   return 'Hotel: Em breve!';
