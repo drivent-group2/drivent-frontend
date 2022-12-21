@@ -14,7 +14,7 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 20px !important;
 `;
 const AlertContainer = styled.div`
-height: 80%;
+  height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;

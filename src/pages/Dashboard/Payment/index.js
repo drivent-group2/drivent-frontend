@@ -13,9 +13,10 @@ import { useState, useEffect } from 'react';
 import Button from '../../../components/Form/Button';
 import useCreateTicket from '../../../hooks/api/useCreateTicket';
 import { toast } from 'react-toastify';
+import PaymentCreditCardPage from './PaymentCreditCardPage';
 
 export default function Payment() {
-  const { ticket } = useTicket();
+  const { ticket, getTicket } = useTicket();
   const { enrollment } = useEnrollment();
   const { payment } = usePaymentByUserId();
   const ticketTypes = useTicketType();
@@ -34,6 +35,7 @@ export default function Payment() {
     data.ticketTypeId = ticketTypeId;
     try {
       await createTickets(data);
+      await getTicket();
       toast('Ticket reservado!');
     } catch (error) {
       toast('Não foi possível reservar seu ticket!');
@@ -68,7 +70,7 @@ export default function Payment() {
             <>
               <StyledTypography variant="h6" color="textSecondary">
                 Fechado! O Total ficou em R$
-                {ticketTypes.tickets.find((ticket) => ticket.ticketTypeId === ticketTypeId)}. Agora é só confirmar.
+                {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price/100}. Agora é só confirmar.
               </StyledTypography>
               <FormWrapper onSubmit={handleForm}>
                 <SubmitContainer>
@@ -95,21 +97,8 @@ export default function Payment() {
             </>
           )}
         </>
-      ) : !payment ? (
-        <h1>espera ai</h1>
-      ) : payment.Ticket[0].Payment.length === 0 ? (
-        <>
-          <PaymentResume ticket={ticket} />
-          {/* colocar a parte de pagamento aqui! */}
-        </>
       ) : (
-        <>
-          <PaymentResume ticket={ticket} />
-          <StyledTypography variant="h6" color="textSecondary">
-            Pagamento
-          </StyledTypography>
-          <PaymentBox />
-        </>
+        <PaymentCreditCardPage />
       )}
     </>
   );

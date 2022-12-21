@@ -1,7 +1,17 @@
 import api from './api';
 
-export async function getPaymentByTicketId(ticketId, token) {
-  const response = await api.get(`/payments?ticketId=${ticketId}`, {
+let cardInfo;
+
+export function setCardInfo(paymentInfo) {
+  cardInfo = paymentInfo;
+}
+
+export function getCardInfo() {
+  return cardInfo;
+}
+
+export async function savePayment(body, token) {
+  const response = await api.post('payments/process', body, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -17,4 +27,12 @@ export async function getPaymentByUserId(token) {
   });
 
   return response.data;
+}
+
+export async function getPaymentByTicketId(ticketId, token) {
+  const response = await api.get(`/payments?ticketId=${ticketId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }
