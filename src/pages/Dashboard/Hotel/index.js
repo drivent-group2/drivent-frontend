@@ -29,7 +29,7 @@ export default function Hotel() {
   return 'Hotel: Em breve!';
 }
 
-const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
