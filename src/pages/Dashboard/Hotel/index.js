@@ -17,7 +17,6 @@ export default function Hotel() {
 
   let i = 0;
   const { hotels } = useHotel();
-
   async function insertBooking() {
     const data = {};
 
