@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 import { BsFillPersonFill } from 'react-icons/bs';
 
-export default function RoomFull({ roomId }) {
+export default function RoomFull({ arrayTrueOrFalse, roomId }) {
   return (
     <>
       <RoomBox>
         <h1>{roomId}</h1>
         <PersonBox>
-          <BsFillPersonFill size={20.25} color="#8C8C8C" />
-          <BsFillPersonFill size={20.25} color="#8C8C8C" />
-          <BsFillPersonFill size={20.25} color="#8C8C8C" />
+          {arrayTrueOrFalse.map((value) => (
+            <BsFillPersonFill size={20.25} color="#8C8C8C" />
+          ))}
         </PersonBox>
       </RoomBox>
     </>

@@ -2,10 +2,33 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import useHotel from '../../../hooks/api/useHotel';
 import Room from '../../../components/Dashboard/common/Room';
+import { useState } from 'react';
+import useToken from '../../../hooks/useToken';
+import { toast } from 'react-toastify';
+import useCreateBooking from '../../../hooks/api/useCreateBooking';
 
 export default function Hotel() {
+  const { createBooking } = useCreateBooking();
+  const [clickedRoom, setClickedRoom] = useState({
+    id: undefined,
+    roomId: undefined,
+    isClicked: false,
+  });
+
   let i = 0;
   const { hotels } = useHotel();
+
+  async function insertBooking() {
+    const data = {};
+
+    data.roomId = clickedRoom.roomId;
+    try {
+      await createBooking(data);
+      toast('Quarto reservado!');
+    } catch (error) {
+      toast('Não foi possível reservar seu quarto!');
+    }
+  }
 
   function hotelVacancy(hotels) {
     hotels.map((value2) => {
@@ -54,6 +77,8 @@ export default function Hotel() {
           {/* adiciona um array de booleanos em cada room, representando lugares vagos e ocupados */}
           {hotelArrayTrueOrFalse(hotels)}
 
+          {console.log(hotels)}
+
           <StyledTypography variant="h6" color="textSecondary">
             Ótima pedida! Agora escolha seu quarto:
           </StyledTypography>
@@ -66,8 +91,12 @@ export default function Hotel() {
               arrayTrueOrFalse={value.arrayTrueOrFalse}
               capacity={value.capacity}
               bookings={value.Booking.length}
+              setClickedRoom={setClickedRoom}
+              clickedRoom={clickedRoom}
             />
           ))}
+
+          <RoomReserveButton onClick={insertBooking}> RESERVAR QUARTO</RoomReserveButton>
         </>
       )}
     </>
@@ -76,4 +105,15 @@ export default function Hotel() {
 
 const StyledTypography = styled(Typography)`
   margin-bottom: 20px !important;
+`;
+
+const RoomReserveButton = styled.button`
+  width: 182px;
+  height: 37px;
+  border-radius: 4px;
+  background-color: #e0e0e0;
+  border: none;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
 `;

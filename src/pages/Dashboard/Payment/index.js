@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import BoxButton from '../../../components/Dashboard/common/BoxButton';
-//import useTicketType from '../../../hooks/api/useTicket';
 import useTicket from '../../../hooks/api/useTicket';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import usePaymentByUserId from '../../../hooks/api/usePaymentByUserId';
-import PaymentResume from '../../../components/Dashboard/common/PaymentResume';
 import NoEnrollment from '../../../components/Dashboard/common/NoEnrollment';
-import PaymentBox from '../../../components/Dashboard/common/PaymentBox';
 import useTicketType from '../../../hooks/api/useTicketType';
 import { useState, useEffect } from 'react';
 import Button from '../../../components/Form/Button';
@@ -70,7 +67,8 @@ export default function Payment() {
             <>
               <StyledTypography variant="h6" color="textSecondary">
                 Fechado! O Total ficou em R$
-                {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price/100}. Agora é só confirmar.
+                {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. Agora é só
+                confirmar.
               </StyledTypography>
               <FormWrapper onSubmit={handleForm}>
                 <SubmitContainer>

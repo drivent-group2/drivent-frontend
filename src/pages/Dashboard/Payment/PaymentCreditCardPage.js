@@ -54,7 +54,7 @@ export default function PaymentCreditCardPage() {
     return <>Carregando...</>;
   }
 
-  if(!ticket) {
+  if (!ticket) {
     return <>Erro, refaça login ou tente mais tarde...</>;
   }
 
