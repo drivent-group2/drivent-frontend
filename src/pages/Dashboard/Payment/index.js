@@ -70,16 +70,7 @@ export default function Payment() {
           )}
           {isRemote ? (
             <>
-              <StyledTypography variant="h6" color="textSecondary">
-                Fechado! O Total ficou em{' '}
-                <b>R$ {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. </b>
-                Agora é só confirmar.
-              </StyledTypography>
-              <FormWrapper onSubmit={handleForm}>
-                <SubmitContainer>
-                  <Button type="submit">RESERVAR INGRESSO</Button>
-                </SubmitContainer>
-              </FormWrapper>
+              <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
             </>
           ) : (
             <>
@@ -95,16 +86,7 @@ export default function Payment() {
               />
               {hotelActive ? (
                 <>
-                  <StyledTypography variant="h6" color="textSecondary">
-                    Fechado! O Total ficou em{' '}
-                    <b>R$ {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. </b>
-                    Agora é só confirmar.
-                  </StyledTypography>
-                  <FormWrapper onSubmit={handleForm}>
-                    <SubmitContainer>
-                      <Button type="submit">RESERVAR INGRESSO</Button>
-                    </SubmitContainer>
-                  </FormWrapper>
+                  <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
                 </>
               ) : (
                 <></>
@@ -169,6 +151,23 @@ function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId, setHot
         }
       })}
     </ButtonsWrappler>
+  );
+}
+
+function ConfirmBox({ ticketTypes, ticketTypeId, handleForm }) {
+  return (
+    <>
+      <StyledTypography variant="h6" color="textSecondary">
+        Fechado! O Total ficou em{' '}
+        <b>R$ {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. </b>
+        Agora é só confirmar.
+      </StyledTypography>
+      <FormWrapper onSubmit={handleForm}>
+        <SubmitContainer>
+          <Button type="submit">RESERVAR INGRESSO</Button>
+        </SubmitContainer>
+      </FormWrapper>
+    </>
   );
 }
 
