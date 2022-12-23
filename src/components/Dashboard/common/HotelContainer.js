@@ -20,7 +20,7 @@ const Wrappler = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+
   img {
     width: 168px;
     height: 109px;

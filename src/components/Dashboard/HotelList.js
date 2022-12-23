@@ -32,7 +32,7 @@ export default function HotelsList({ hotels, setSelectedHotelId, selectedHotelId
     </>
   );
 }
-function roomTypeName(capacity) {
+export function roomTypeName(capacity) {
   switch (capacity) {
   case 1:
     return 'Single';
