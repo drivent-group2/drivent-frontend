@@ -9,6 +9,7 @@ import { useState } from 'react';
 import useToken from '../../../hooks/useToken';
 import { toast } from 'react-toastify';
 import useCreateBooking from '../../../hooks/api/useCreateBooking';
+import HotelsList from '../../../components/Dashboard/HotelList';
 
 export default function Hotel() {
   const { ticket, ticketLoading } = useTicket();
@@ -22,7 +23,6 @@ export default function Hotel() {
     roomId: undefined,
     isClicked: false,
   });
-
   let i = 0;
 
   async function insertBooking() {
@@ -52,7 +52,9 @@ export default function Hotel() {
     );
   }
   if (!hotels) return <ErrorMessage>Estamos sem hoteis para esse evento</ErrorMessage>;
-
+  {
+    hotelVacancy(hotels);
+  }
   return (
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
@@ -69,7 +71,6 @@ export default function Hotel() {
             <StyledTypography variant="h6" color="textSecondary">
               Ótima pedida! Agora escolha seu quarto:
             </StyledTypography>
-            {hotelVacancy(hotels)}
             {hotelArrayTrueOrFalse(hotels)}
 
             <RoomsWrappler>
@@ -125,18 +126,7 @@ export default function Hotel() {
     }
     room.arrayTrueOrFalse = bookingArr;
   }
-  function HotelsList({ hotels, setSelectedHotelId, selectedHotelId }) {
-    return (
-      <>
-        {hotels.map((hotel) => (
-          <HotelContainer onClick={() => setSelectedHotelId(hotel.id)} selected={selectedHotelId === hotel.id}>
-            <img src={hotel.image} />
-            <h1>{hotel.name}</h1>
-          </HotelContainer>
-        ))}
-      </>
-    );
-  }
+
   function hotelArrayTrueOrFalse(hotels) {
     hotels.map((value2) => {
       value2.Rooms.map((value) => {
@@ -145,6 +135,7 @@ export default function Hotel() {
     });
   }
 }
+
 const HotelWrappler = styled.div`
   display: flex;
 `;
@@ -166,6 +157,7 @@ const RoomReserveButton = styled.button`
   font-size: 14px;
   font-family: 'Roboto', sans-serif;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 `;
 
 export const ErrorMessage = styled.div`

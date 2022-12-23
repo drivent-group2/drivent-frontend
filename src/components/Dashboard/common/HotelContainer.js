@@ -8,7 +8,7 @@ export default function HotelContainer({ onClick, selected, children }) {
 }
 
 const Wrappler = styled.div`
-box-sizing: border-box;
+  box-sizing: border-box;
   width: 196px;
   height: 264px;
   background: ${(props) => (props.selected ? '#ffeed2' : '#EBEBEB')};
@@ -18,9 +18,13 @@ box-sizing: border-box;
   margin-bottom: 24px;
   padding: 14px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   img {
     width: 168px;
     height: 109px;
+    min-height: 109px;
     border-radius: 5px;
     margin-bottom: 10px;
   }
@@ -31,6 +35,22 @@ box-sizing: border-box;
     font-weight: 400;
     font-size: 20px;
     line-height: 23px;
+    margin-bottom: 5px;
+  }
+  h2 {
+    font-family: 'Roboto';
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 14px;
+    color: #3c3c3c;
+    margin-bottom: 2px;
+  }
+  h3 {
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #3c3c3c;
+    margin-bottom: 3px;
   }
 `;
-
