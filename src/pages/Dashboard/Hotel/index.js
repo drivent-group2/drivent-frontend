@@ -168,7 +168,7 @@ const RoomReserveButton = styled.button`
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
 `;
 
-const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
