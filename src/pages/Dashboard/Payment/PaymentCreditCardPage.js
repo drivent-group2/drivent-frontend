@@ -7,6 +7,7 @@ import useToken from '../../../hooks/useToken';
 import useTicket from '../../../hooks/api/useTicket';
 import useSavePayment from '../../../hooks/api/useSavePayment';
 import { toast } from 'react-toastify';
+import Button from '../../../components/Form/Button';
 
 export default function PaymentCreditCardPage() {
   const token = useToken();
@@ -54,7 +55,7 @@ export default function PaymentCreditCardPage() {
     return <>Carregando...</>;
   }
 
-  if(!ticket) {
+  if (!ticket) {
     return <>Erro, refaça login ou tente mais tarde...</>;
   }
 
@@ -80,7 +81,7 @@ export default function PaymentCreditCardPage() {
         <>
           <PaymentForm />
           <ErrorMessage>{cardMessage}</ErrorMessage>
-          <ButtonPayment onClick={insertPayment}>Finalizar pedido</ButtonPayment>
+          <Button onClick={insertPayment}>Finalizar pedido</Button>
         </>
       )}
     </>
@@ -111,16 +112,6 @@ const TicketInfo = styled.div`
     color: #898989;
     font-size: 14px;
   }
-`;
-
-const ButtonPayment = styled.button`
-  width: 182px;
-  height: 37px;
-  border-radius: 4px;
-  background-color: #e0e0e0;
-  border: none;
-  font-size: 14px;
-  font-family: 'Roboto', sans-serif;
 `;
 
 const PaymentComplete = styled.div`

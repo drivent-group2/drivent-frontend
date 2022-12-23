@@ -7,7 +7,7 @@ const Wrappler = styled.div`
   position: absolute;
   width: 400px;
   height: 46px;
-  left: 460px;
-  top: 400px;
+  left: 250px;
+  top: 320px;
   text-align: center;
 `;

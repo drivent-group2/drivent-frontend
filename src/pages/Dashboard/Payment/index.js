@@ -4,9 +4,7 @@ import BoxButton from '../../../components/Dashboard/common/BoxButton';
 import useTicket from '../../../hooks/api/useTicket';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import usePaymentByUserId from '../../../hooks/api/usePaymentByUserId';
-import PaymentResume from '../../../components/Dashboard/common/PaymentResume';
 import NoEnrollment from '../../../components/Dashboard/common/NoEnrollment';
-import PaymentBox from '../../../components/Dashboard/common/PaymentBox';
 import useTicketType from '../../../hooks/api/useTicketType';
 import { useState, useEffect } from 'react';
 import Button from '../../../components/Form/Button';
@@ -23,6 +21,7 @@ export default function Payment() {
   const [includesHotel, setIncludesHotel] = useState(null);
   const [ticketTypeId, setTicketTypeId] = useState(null);
   const { createTickets } = useCreateTicket();
+  const [hotelActive, setHotelActive] = useState(false);
 
   useEffect(() => {
     if (isRemote) setIncludesHotel(null);
@@ -63,19 +62,23 @@ export default function Payment() {
               isRemote={isRemote}
               setIsRemote={setIsRemote}
               setTicketTypeId={setTicketTypeId}
+              setHotelActive={setHotelActive}
             />
           )}
           {isRemote ? (
             <>
+
               <StyledTypography variant="h6" color="textSecondary">
                 Fechado! O Total ficou em R$
-                {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price/100}. Agora é só confirmar.
+                {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. Agora é só
+                confirmar.
               </StyledTypography>
               <FormWrapper onSubmit={handleForm}>
                 <SubmitContainer>
                   <Button type="submit">RESERVAR INGRESSO</Button>
                 </SubmitContainer>
               </FormWrapper>
+              <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
             </>
           ) : (
             <>
@@ -87,12 +90,15 @@ export default function Payment() {
                 includesHotel={includesHotel}
                 setIncludesHotel={setIncludesHotel}
                 setTicketTypeId={setTicketTypeId}
+                setHotelActive={setHotelActive}
               />
-              <FormWrapper onSubmit={handleForm}>
-                <SubmitContainer>
-                  <Button type="submit">RESERVAR INGRESSO</Button>
-                </SubmitContainer>
-              </FormWrapper>
+              {hotelActive ? (
+                <>
+                  <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
+                </>
+              ) : (
+                <></>
+              )}
             </>
           )}
         </>
@@ -102,7 +108,7 @@ export default function Payment() {
     </>
   );
 }
-function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeId }) {
+function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeId, setHotelActive }) {
   const baseTicket = tickets ? tickets.filter((ticket) => !ticket.isRemote && !ticket.includesHotel) : [];
   const price = baseTicket[0]?.price / 100;
   return (
@@ -117,6 +123,7 @@ function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeI
                 onClick={() => {
                   setIncludesHotel(ticket.includesHotel);
                   setTicketTypeId(ticket.id);
+                  setHotelActive(true);
                 }}
               >
                 {ticket.includesHotel ? <h1>Com Hotel</h1> : <h1>Sem Hotel</h1>}
@@ -130,7 +137,7 @@ function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeI
   );
 }
 
-function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId }) {
+function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId, setHotelActive }) {
   return (
     <ButtonsWrappler>
       {tickets.map((ticket, index) => {
@@ -142,6 +149,7 @@ function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId }) {
               onClick={() => {
                 setIsRemote(ticket.isRemote);
                 setTicketTypeId(ticket.id);
+                setHotelActive(false);
               }}
             >
               {ticket.isRemote ? <h1>Online</h1> : <h1>Presencial</h1>}
@@ -154,12 +162,32 @@ function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId }) {
   );
 }
 
+function ConfirmBox({ ticketTypes, ticketTypeId, handleForm }) {
+  return (
+    <>
+      <StyledTypography variant="h6" color="textSecondary">
+        Fechado! O Total ficou em{' '}
+        <b>R$ {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. </b>
+        Agora é só confirmar.
+      </StyledTypography>
+      <FormWrapper onSubmit={handleForm}>
+        <SubmitContainer>
+          <Button type="submit">RESERVAR INGRESSO</Button>
+        </SubmitContainer>
+      </FormWrapper>
+    </>
+  );
+}
+
 const StyledTypography = styled(Typography)`
   margin-bottom: 20px !important;
+  b {
+    font-weight: 700;
+  }
 `;
 const ButtonsWrappler = styled.div`
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 const SubmitContainer = styled.div`
