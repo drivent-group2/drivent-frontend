@@ -6,15 +6,16 @@ import { Typography } from '@material-ui/core';
 import useHotel from '../../../hooks/api/useHotel';
 import Room from '../../../components/Dashboard/common/Room';
 import { useState } from 'react';
-import useToken from '../../../hooks/useToken';
 import { toast } from 'react-toastify';
 import useCreateBooking from '../../../hooks/api/useCreateBooking';
-import HotelsList, { roomTypeName } from '../../../components/Dashboard/HotelList';
+import { roomTypeName } from '../../../components/Dashboard/HotelList';
 import useBooking from '../../../hooks/api/useBooking';
 import Button from '../../../components/Form/Button';
+import useUpdateBooking from '../../../hooks/api/useUpdateBooking';
+import { useEffect } from 'react';
 
 export default function Hotel() {
-  const { ticket, ticketLoading } = useTicket();
+  const { ticket } = useTicket();
 
   const { hotels } = useHotel();
   const [selectedHotelId, setSelectedHotelId] = useState(null);
@@ -25,13 +26,15 @@ export default function Hotel() {
     isClicked: false,
   });
   const { booking } = useBooking();
+  const { updateBooking } = useUpdateBooking();
   const [changingRoom, setChangingRoom] = useState(false);
 
   let i = 0;
 
+  // useEffect(() => {}, [booking]);
+
   async function insertBooking() {
     const data = {};
-
     data.roomId = clickedRoom.roomId;
     try {
       await createBooking(data);
@@ -41,7 +44,19 @@ export default function Hotel() {
     }
   }
 
-  async function updateBooking() {}
+  async function editBooking() {
+    const data = {};
+    const oldRoomId = booking.Room.id;
+    console.log(booking);
+
+    data.roomId = clickedRoom.roomId;
+    try {
+      await updateBooking(data, oldRoomId);
+      toast('Quarto reservado!');
+    } catch (error) {
+      toast('Não foi possível reservar seu quarto!');
+    }
+  }
 
   if (!ticket) {
     return <ErrorMessage>Você precisa montar seu ticket antes de fazer a escolha da hospedagem</ErrorMessage>;
@@ -63,22 +78,8 @@ export default function Hotel() {
 
   if (!booking) {
     return (
-      // <>
-      // {booking && !changingRoom ? (
-      //   <>
-      //     <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
-      //     <StyledTypography variant="h6" color="textSecondary">
-      //       Você já escolheu seu quarto
-      //     </StyledTypography>
-      //     <HotelWrappler>
-      //       <HotelsList hotels={hotels} setSelectedHotelId={setSelectedHotelId} selectedHotelId={selectedHotelId} />
-      //     </HotelWrappler>
-      //     <Button onClick={() => setChangingRoom(true)}>TROCAR DE QUARTO</Button>
-      //   </>
-      // ) : (
       <>
         <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
-
         <StyledTypography variant="h6" color="textSecondary">
           Primeiro, escolha seu hotel
         </StyledTypography>
@@ -95,7 +96,7 @@ export default function Hotel() {
 
               <RoomsWrappler>
                 {hotels.map((hotel) => {
-                  if (hotel.id == selectedHotelId) {
+                  if (hotel.id === selectedHotelId) {
                     return hotel.Rooms.map((value, index) => (
                       <Room
                         key={index}
@@ -111,7 +112,6 @@ export default function Hotel() {
                   }
                 })}
               </RoomsWrappler>
-
               <RoomReserveButton onClick={insertBooking}>RESERVAR QUARTO</RoomReserveButton>
             </>
           )}
@@ -128,16 +128,69 @@ export default function Hotel() {
       if (hotel.id !== booking.Room.Hotel.id) {
         return (
           <>
-            <HotelContainer>
-              <img src={hotel.image} />
-              <h1>{hotel.name}</h1>
-              <Description>
-                <h2>Quarto reservado</h2>
-                <h3>{`${booking.Room.name} (${roomTypeName(booking.Room.capacity)})`}</h3>
-                <h2>Pessoas no seu quarto</h2>
-                <h3>{`${vacancies > 0 ? `Você e mais ${vacancies}` : 'Só você'}`}</h3>
-              </Description>
-            </HotelContainer>
+            {changingRoom ? (
+              <>
+                <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+                <StyledTypography variant="h6" color="textSecondary">
+                  Primeiro, escolha seu hotel
+                </StyledTypography>
+                <HotelWrappler>
+                  <HotelsList
+                    hotels={hotels}
+                    setSelectedHotelId={setSelectedHotelId}
+                    selectedHotelId={selectedHotelId}
+                  />
+                </HotelWrappler>
+                <>
+                  {selectedHotelId && hotels && (
+                    <>
+                      <StyledTypography variant="h6" color="textSecondary">
+                        Ótima pedida! Agora escolha seu quarto:
+                      </StyledTypography>
+                      {hotelArrayTrueOrFalse(hotels)}
+
+                      <RoomsWrappler>
+                        {hotels.map((hotel) => {
+                          if (hotel.id === selectedHotelId) {
+                            return hotel.Rooms.map((value, index) => (
+                              <Room
+                                key={index}
+                                index={(i += 1)}
+                                roomId={value.id}
+                                arrayTrueOrFalse={value.arrayTrueOrFalse}
+                                capacity={value.capacity}
+                                bookings={value.Booking.length}
+                                clickedRoom={clickedRoom}
+                                setClickedRoom={setClickedRoom}
+                              />
+                            ));
+                          }
+                        })}
+                      </RoomsWrappler>
+                      <RoomReserveButton onClick={editBooking}>TROCAR QUARTO</RoomReserveButton>
+                    </>
+                  )}
+                </>
+              </>
+            ) : (
+              <>
+                <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+                <StyledTypography variant="h6" color="textSecondary">
+                  Você já escolheu seu quarto:
+                </StyledTypography>
+                <HotelContainer>
+                  <img src={hotel.image} alt="img" />
+                  <h1>{hotel.name}</h1>
+                  <Description>
+                    <h2>Quarto reservado</h2>
+                    <h3>{`${booking.Room.name} (${roomTypeName(booking.Room.capacity)})`}</h3>
+                    <h2>Pessoas no seu quarto</h2>
+                    <h3>{`${vacancies > 0 ? `Você e mais ${vacancies}` : 'Só você'}`}</h3>
+                  </Description>
+                </HotelContainer>
+                <Button onClick={() => setChangingRoom(true)}>TROCAR DE QUARTO</Button>
+              </>
+            )}
           </>
         );
       }
