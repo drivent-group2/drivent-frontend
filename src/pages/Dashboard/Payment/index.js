@@ -67,7 +67,6 @@ export default function Payment() {
           )}
           {isRemote ? (
             <>
-
               <StyledTypography variant="h6" color="textSecondary">
                 Fechado! O Total ficou em R$
                 {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. Agora é só

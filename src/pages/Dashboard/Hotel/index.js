@@ -9,19 +9,22 @@ import { useState } from 'react';
 import useToken from '../../../hooks/useToken';
 import { toast } from 'react-toastify';
 import useCreateBooking from '../../../hooks/api/useCreateBooking';
+import useBooking from '../../../hooks/api/useBooking';
+import Button from '../../../components/Form/Button';
 
 export default function Hotel() {
   const { ticket, ticketLoading } = useTicket();
 
   const { hotels } = useHotel();
   const [selectedHotelId, setSelectedHotelId] = useState(null);
-
+  const { booking } = useBooking();
   const { createBooking } = useCreateBooking();
   const [clickedRoom, setClickedRoom] = useState({
     id: undefined,
     roomId: undefined,
     isClicked: false,
   });
+  const [changingRoom, setChangingRoom] = useState(false);
 
   let i = 0;
 
@@ -36,6 +39,8 @@ export default function Hotel() {
       toast('Não foi possível reservar seu quarto!');
     }
   }
+
+  async function updateBooking() {}
 
   if (!ticket) {
     return <ErrorMessage>Você precisa montar seu ticket antes de fazer a escolha da hospedagem</ErrorMessage>;
@@ -55,46 +60,59 @@ export default function Hotel() {
 
   return (
     <>
-      <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
-
-      <StyledTypography variant="h6" color="textSecondary">
-        Primeiro, escolha seu hotel
-      </StyledTypography>
-      <HotelWrappler>
-        <HotelsList hotels={hotels} setSelectedHotelId={setSelectedHotelId} selectedHotelId={selectedHotelId} />
-      </HotelWrappler>
-      <>
-        {selectedHotelId && hotels && (
+      {booking && !changingRoom ? (
+        <>
+          <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+          <StyledTypography variant="h6" color="textSecondary">
+            Você já escolheu seu quarto
+          </StyledTypography>
+          <HotelWrappler>
+            <HotelsList hotels={hotels} setSelectedHotelId={setSelectedHotelId} selectedHotelId={selectedHotelId} />
+          </HotelWrappler>
+          <Button onClick={() => setChangingRoom(true)}>TROCAR DE QUARTO</Button>
+        </>
+      ) : (
+        <>
+          <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+          <StyledTypography variant="h6" color="textSecondary">
+            Primeiro, escolha seu hotel
+          </StyledTypography>
+          <HotelWrappler>
+            <HotelsList hotels={hotels} setSelectedHotelId={setSelectedHotelId} selectedHotelId={selectedHotelId} />
+          </HotelWrappler>
           <>
-            <StyledTypography variant="h6" color="textSecondary">
-              Ótima pedida! Agora escolha seu quarto:
-            </StyledTypography>
-            {hotelVacancy(hotels)}
-            {hotelArrayTrueOrFalse(hotels)}
+            {selectedHotelId && hotels && (
+              <>
+                <StyledTypography variant="h6" color="textSecondary">
+                  Ótima pedida! Agora escolha seu quarto:
+                </StyledTypography>
+                {hotelVacancy(hotels)}
+                {hotelArrayTrueOrFalse(hotels)}
 
-            <RoomsWrappler>
-              {hotels.map((hotel) => {
-                if (hotel.id == selectedHotelId) {
-                  return hotel.Rooms.map((value, index) => (
-                    <Room
-                      key={index}
-                      index={(i += 1)}
-                      roomId={value.id}
-                      arrayTrueOrFalse={value.arrayTrueOrFalse}
-                      capacity={value.capacity}
-                      bookings={value.Booking.length}
-                      clickedRoom={clickedRoom}
-                      setClickedRoom={setClickedRoom}
-                    />
-                  ));
-                }
-              })}
-            </RoomsWrappler>
-
-            <RoomReserveButton onClick={insertBooking}>RESERVAR QUARTO</RoomReserveButton>
+                <RoomsWrappler>
+                  {hotels.map((hotel) => {
+                    if (hotel.id === selectedHotelId) {
+                      return hotel.Rooms.map((value, index) => (
+                        <Room
+                          key={index}
+                          index={(i += 1)}
+                          roomId={value.id}
+                          arrayTrueOrFalse={value.arrayTrueOrFalse}
+                          capacity={value.capacity}
+                          bookings={value.Booking.length}
+                          clickedRoom={clickedRoom}
+                          setClickedRoom={setClickedRoom}
+                        />
+                      ));
+                    }
+                  })}
+                </RoomsWrappler>
+                <RoomReserveButton onClick={insertBooking}>RESERVAR QUARTO</RoomReserveButton>
+              </>
+            )}
           </>
-        )}
-      </>
+        </>
+      )}
     </>
   );
 
@@ -130,7 +148,7 @@ export default function Hotel() {
       <>
         {hotels.map((hotel) => (
           <HotelContainer onClick={() => setSelectedHotelId(hotel.id)} selected={selectedHotelId === hotel.id}>
-            <img src={hotel.image} />
+            <img src={hotel.image} alt="hotel_img" />
             <h1>{hotel.name}</h1>
           </HotelContainer>
         ))}
