@@ -8,8 +8,8 @@ export default function useBooking() {
   const { data: booking, loading: bookingLoading, error: bookingError } = useAsync(() => bookingApi.getBooking(token));
 
   return {
-    booking,
     bookingLoading,
     bookingError,
+    booking,
   };
 }
