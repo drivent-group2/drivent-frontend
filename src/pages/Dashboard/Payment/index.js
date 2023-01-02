@@ -3,7 +3,6 @@ import Typography from '@material-ui/core/Typography';
 import BoxButton from '../../../components/Dashboard/common/BoxButton';
 import useTicket from '../../../hooks/api/useTicket';
 import useEnrollment from '../../../hooks/api/useEnrollment';
-import usePaymentByUserId from '../../../hooks/api/usePaymentByUserId';
 import NoEnrollment from '../../../components/Dashboard/common/NoEnrollment';
 import useTicketType from '../../../hooks/api/useTicketType';
 import { useState, useEffect } from 'react';
@@ -15,13 +14,13 @@ import PaymentCreditCardPage from './PaymentCreditCardPage';
 export default function Payment() {
   const { ticket, getTicket } = useTicket();
   const { enrollment } = useEnrollment();
-  const { payment } = usePaymentByUserId();
   const ticketTypes = useTicketType();
   const [isRemote, setIsRemote] = useState(null);
   const [includesHotel, setIncludesHotel] = useState(null);
   const [ticketTypeId, setTicketTypeId] = useState(null);
   const { createTickets } = useCreateTicket();
   const [hotelActive, setHotelActive] = useState(false);
+  const [noneSelected, setNoneSelected] = useState(true);
 
   useEffect(() => {
     if (isRemote) setIncludesHotel(null);
@@ -63,41 +62,37 @@ export default function Payment() {
               setIsRemote={setIsRemote}
               setTicketTypeId={setTicketTypeId}
               setHotelActive={setHotelActive}
+              setNoneSelected={setNoneSelected}
             />
           )}
-          {isRemote ? (
-            <>
-
-              <StyledTypography variant="h6" color="textSecondary">
-                Fechado! O Total ficou em R$
-                {ticketTypes.tickets.find((ticketType) => ticketType.id === ticketTypeId).price / 100}. Agora é só
-                confirmar.
-              </StyledTypography>
-              <FormWrapper onSubmit={handleForm}>
-                <SubmitContainer>
-                  <Button type="submit">RESERVAR INGRESSO</Button>
-                </SubmitContainer>
-              </FormWrapper>
-              <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
-            </>
+          {noneSelected ? (
+            <></>
           ) : (
             <>
-              <StyledTypography variant="h6" color="textSecondary">
-                Ótimo! Agora escolha sua modalidade de hospedagem
-              </StyledTypography>
-              <HotelButtons
-                tickets={ticketTypes.tickets}
-                includesHotel={includesHotel}
-                setIncludesHotel={setIncludesHotel}
-                setTicketTypeId={setTicketTypeId}
-                setHotelActive={setHotelActive}
-              />
-              {hotelActive ? (
+              {isRemote ? (
                 <>
                   <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
                 </>
               ) : (
-                <></>
+                <>
+                  <StyledTypography variant="h6" color="textSecondary">
+                    Ótimo! Agora escolha sua modalidade de hospedagem
+                  </StyledTypography>
+                  <HotelButtons
+                    tickets={ticketTypes.tickets}
+                    includesHotel={includesHotel}
+                    setIncludesHotel={setIncludesHotel}
+                    setTicketTypeId={setTicketTypeId}
+                    setHotelActive={setHotelActive}
+                  />
+                  {hotelActive ? (
+                    <>
+                      <ConfirmBox ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} handleForm={handleForm} />
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
               )}
             </>
           )}
@@ -137,7 +132,7 @@ function HotelButtons({ tickets, includesHotel, setIncludesHotel, setTicketTypeI
   );
 }
 
-function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId, setHotelActive }) {
+function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId, setHotelActive, setNoneSelected }) {
   return (
     <ButtonsWrappler>
       {tickets.map((ticket, index) => {
@@ -150,6 +145,7 @@ function RemoteButtons({ tickets, isRemote, setIsRemote, setTicketTypeId, setHot
                 setIsRemote(ticket.isRemote);
                 setTicketTypeId(ticket.id);
                 setHotelActive(false);
+                setNoneSelected(false);
               }}
             >
               {ticket.isRemote ? <h1>Online</h1> : <h1>Presencial</h1>}
