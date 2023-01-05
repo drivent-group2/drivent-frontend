@@ -16,7 +16,6 @@ import { useEffect } from 'react';
 
 export default function Hotel() {
   const { ticket } = useTicket();
-
   const { hotels } = useHotel();
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const { createBooking } = useCreateBooking();
@@ -25,13 +24,19 @@ export default function Hotel() {
     roomId: undefined,
     isClicked: false,
   });
-  const { booking } = useBooking();
+
+  const { getBooking } = useBooking();
+  const [reloadBooking, setReloadBooking] = useState(false);
+  const [booking, setBooking] = useState();
+
+  useEffect(async() => {
+    setBooking(await getBooking());
+  }, [reloadBooking]);
+
   const { updateBooking } = useUpdateBooking();
   const [changingRoom, setChangingRoom] = useState(false);
 
   let i = 0;
-
-  // useEffect(() => {}, [booking]);
 
   async function insertBooking() {
     const data = {};
@@ -42,6 +47,7 @@ export default function Hotel() {
     } catch (error) {
       toast('Não foi possível reservar seu quarto!');
     }
+    setReloadBooking(!reloadBooking);
   }
 
   async function editBooking() {
