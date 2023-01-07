@@ -69,7 +69,7 @@ export default function Activities() {
 
   function deniedEnterActivity(error) {
     const errorStatus = error.message.slice(-3);
-    if(errorStatus === '409') {
+    if (errorStatus === '409') {
       toast('Não foi possível inscrever na atividade, houve conflito de horários');
       setDisableIonIcon(false);
       return;
@@ -112,10 +112,12 @@ export default function Activities() {
           <>
             <ActivitiesByNameBox>
               <ActivityBoxTitle>{activityPlace}</ActivityBoxTitle>
-              
+
               {dayActivities.map((activity) =>
                 activity.place === activityPlace ? (
-                  <ActivityBox duration={Number(activity.endDate.slice(11, 13)) -Number(activity.startDate.slice(11, 13)) }>
+                  <ActivityBox
+                    duration={Number(activity.endDate.slice(11, 13)) - Number(activity.startDate.slice(11, 13))}
+                  >
                     <div>{activity.name}</div>
                     <div>
                       {activity.startDate.slice(11, 16)} - {activity.endDate.slice(11, 16)}h
