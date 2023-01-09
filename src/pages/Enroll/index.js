@@ -10,7 +10,7 @@ import { Row, Title, Label } from '../../components/Auth';
 import Link from '../../components/Link';
 
 import EventInfoContext from '../../contexts/EventInfoContext';
-import { AuthGithubContext } from '../../contexts/AuthGithubContext';
+import AuthGithubContext from '../../contexts/AuthGithubContext';
 import useSignUp from '../../hooks/api/useSignUp';
 
 export default function Enroll() {
@@ -24,6 +24,16 @@ export default function Enroll() {
 
   const { eventInfo } = useContext(EventInfoContext);
   const { singInGithub } = useContext(AuthGithubContext);
+
+  async function signWithGithub() {
+    try {
+      await singInGithub();
+      toast('Inscrito com sucesso! Por favor, faça login.');
+      navigate('/dashboard');
+    } catch (error) {
+      toast('Não foi possível fazer o cadastro!');
+    }
+  }
 
   async function submit(event) {
     event.preventDefault();
@@ -69,7 +79,7 @@ export default function Enroll() {
             Inscrever
           </Button>
         </form>
-        <Button onClick={() => singInGithub()} color="secondary" fullWidth disabled={loadingSignUp}>
+        <Button onClick={() => signWithGithub()} color="secondary" fullWidth disabled={loadingSignUp}>
           Entrar com GitHub
         </Button>
       </Row>

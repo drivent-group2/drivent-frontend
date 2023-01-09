@@ -5,7 +5,8 @@ import useGitSignup from '../hooks/api/useGitOauth';
 
 const provider = new GithubAuthProvider();
 
-export const AuthGithubContext = createContext({});
+const AuthGithubContext = createContext({});
+export default AuthGithubContext;
 
 export function GitAuthProvider({ children }) {
   const { signUpSignIn } = useGitSignup();
@@ -13,24 +14,26 @@ export function GitAuthProvider({ children }) {
   const [gitUser, setGitUser] = useState(null);
 
   async function singInGithub() {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GithubAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        setGitUser(user);
-        sessionStorage.setItem('@AuthFirebase:token', token);
-        sessionStorage.setItem('@AuthFirebase:token', JSON.stringify(user));
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
-        const credential = GithubAuthProvider.credentialFromError(error);
-      });
-
-    return (
-      <AuthGithubContext.Provider value={{ singInGithub, signed: !!gitUser }}>{children}</AuthGithubContext.Provider>
-    );
+    signInWithPopup(auth, provider);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GithubAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+      setGitUser(user);
+      sessionStorage.setItem('@AuthFirebase:token', token);
+      sessionStorage.setItem('@AuthFirebase:token', JSON.stringify(user));
+      await signUpSignIn(user.email);
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = GithubAuthProvider.credentialFromError(error);
+    }
   }
+  return (
+    <AuthGithubContext.Provider value={{ singInGithub, signed: !!gitUser, gitUser }}>
+      {children}
+    </AuthGithubContext.Provider>
+  );
 }
