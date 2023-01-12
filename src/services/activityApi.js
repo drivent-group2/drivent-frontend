@@ -10,9 +10,9 @@ export async function getActivities(token, ticketTypeId) {
   return response.data;
 }
 
-export async function postTicketActivity(token, ticketId, activityId) {
+export async function postTicketActivity(token, ticketId, activityId, ticketTypeId) {
   const response = await api.post(
-    '/activities/enter',
+    `/activities/enter/?ticketTypeId=${ticketTypeId}`,
     { ticketId, activityId },
     {
       headers: {

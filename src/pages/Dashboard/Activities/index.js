@@ -56,7 +56,7 @@ export default function Activities() {
       setDisableIonIcon(false);
       return;
     }
-    const promise = postTicketActivity(token, ticket.id, activity.id);
+    const promise = postTicketActivity(token, ticket.id, activity.id, ticket.TicketType.id);
     promise.then(authorizedEnterActivity);
     promise.catch(deniedEnterActivity);
   }
